@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fa">
+<head>
+  <meta charset="utf-8">
+  <title>لیبل دم‌موشی - بارکد و وزن نهایی</title>
+  <style>
+    @page { size: 80mm 11mm; margin: 0; }
+    body {
+      margin: 0;
+      width: 80mm;
+      height: 11mm;
+      background: #fff;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      font-family: Tahoma, sans-serif;
+    }
+    @media print { .controls { display: none; } }
+
+    #label {
+      position: relative;
+      width: 80mm;
+      height: 11mm;
+      border: 1px dashed rgba(0,0,0,0.1); /* برای تست موقعیت */
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* بارکد ایستاده */
+    #barcode {
+      position: absolute;
+      top: -2.25mm;     /* موقعیت بالا */
+      left: 2mm;        /* فاصله از سمت چپ */
+      width: 20mm;
+      height: 11mm;
+      transform-origin: top left;
+      transform: rotate(-90deg);
+    }
+
+    /* متن وزن روبه‌روی بارکد */
+    #weight {
+      position: absolute;
+      top: -2.25mm;     /* همان top بارکد */
+      left: 32mm;       /* 1 سانتی‌متر فاصله از بارکد */
+      width: 20mm;
+      height: 8.5mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3mm;
+      transform: rotate(-90deg);
+      transform-origin: top left;
+    }
+
+    input[type=text] {
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #0078d7;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <label>بارکد:</label>
+    <input id="barcodeValue" type="text" value="123456789012">
+    <button onclick="renderBarcode()">نمایش</button>
+    <label>وزن (g):</label>
+    <input id="weightInput" type="text" value="50">
+    <button onclick="updateWeight()">به‌روز کن</button>
+    <button onclick="window.print()">چاپ</button>
+  </div>
+
+  <div id="label">
+    <svg id="barcode"></svg>
+    <div id="weight">50g</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script>
+    function renderBarcode() {
+      const value = document.getElementById("barcodeValue").value || "0000000000";
+      const svg = document.getElementById("barcode");
+      svg.innerHTML = "";
+
+      JsBarcode(svg, value, {
+        format: "CODE128",
+        width: 0.30,
+        height: 8.5,
+        displayValue: false,
+        margin: 0
+      });
+    }
+
+    function updateWeight() {
+      const weightValue = document.getElementById("weightInput").value || "0";
+      document.getElementById("weight").innerText = weightValue + "g";
+    }
+
+    renderBarcode(); // نمایش اولیه بارکد
+  </script>
+</body>
+</html>
